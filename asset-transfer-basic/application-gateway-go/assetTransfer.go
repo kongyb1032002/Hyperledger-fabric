@@ -37,7 +37,10 @@ const (
 )
 
 var now = time.Now()
+
 var assetId = fmt.Sprintf("asset%d", now.Unix()*1e3+int64(now.Nanosecond())/1e6)
+
+// var assetId = fmt.Sprintf("asset%d", (now.Unix()*1e3+int64(now.Nanosecond())/1e6)%6+1)
 
 func main() {
 	// The gRPC client connection should be shared by all Gateway connections to this endpoint
@@ -192,7 +195,7 @@ func getAllAssets(contract *client.Contract) {
 
 // Submit a transaction synchronously, blocking until it has been committed to the ledger.
 func createAsset(contract *client.Contract) {
-	fmt.Printf("\n--> Submit Transaction: CreateAsset, creates new asset with ID, Color, Size, Owner and AppraisedValue arguments \n")
+	fmt.Printf("\n--> Submit Transaction: CreateAsset, creates new asset with ID=%v, Color, Size, Owner and AppraisedValue arguments \n", assetId)
 
 	_, err := contract.SubmitTransaction("CreateAsset", assetId, "yellow", "5", "Tom", "1300")
 	if err != nil {
@@ -204,7 +207,7 @@ func createAsset(contract *client.Contract) {
 
 // Evaluate a transaction by assetID to query ledger state.
 func readAssetByID(contract *client.Contract) {
-	fmt.Printf("\n--> Evaluate Transaction: ReadAsset, function returns asset attributes\n")
+	fmt.Printf("\n--> Evaluate Transaction: ReadAsset ID=%v, function returns asset attributes\n", assetId)
 
 	evaluateResult, err := contract.EvaluateTransaction("ReadAsset", assetId)
 	if err != nil {
